@@ -1,0 +1,72 @@
+.background {
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: #1b1f27;
+}
+
+.welcome {
+    text-align: center;
+    width: fill;
+}
+
+.center-div {
+    float: center;
+    width: 50%;
+    margin: auto;
+    padding: 20px 50px;
+    margin-top: 6px;
+  }
+
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    border: none;
+    display: inline-block;
+    color: #ffffff;
+    box-sizing: border-box;
+    background-color: #252a34;
+  }
+
+input::placeholder {
+    color: #cbd0f7;
+}
+
+.imgcontainer {
+        text-align: center;
+        margin: 24px 0 12px 0;
+        position: relative;
+      }
+
+/*.container {
+        text-align: center;
+        float: center;
+        width: 100%;
+        }
+*/
+        
+.container {
+    padding: 16px;
+  }
+  
+h1 {
+    color: #ffffff;
+}
+
+img {
+    max-width: 100%;
+    width: fill;
+}
+button {
+    background-color: #5568fe;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  button:hover {
+    opacity: 0.8;
+  }

@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script type="text/javascript" src="{{ url_for('static', filename = 'jquery-3.7.1.js') }}"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='/addhosts.css') }}">
+    </head>
+    <body class="background">
+        <input type="file" id="fileinput" />
+        <button onclick="uploadHosts()">Upload Hosts</button>
+        <table class="hoststable" id="tableCSV">
+          <tbody>
+            <tr>
+              <th>Hostname</th>
+              <th>IP</th>
+              <th>DNS</th>
+              <th>Port</th>
+              <th>Type</th>
+              <th>Status</th>
+            </tr>
+          </tbody>
+        </table>
+        <script>
+          function readSingleFile(evt) {
+            var f = evt.target.files[0]; 
+            if (f) {
+              var r = new FileReader();
+              r.onload = function(e) { 
+                  var contents = e.target.result;
+                  var lines = contents.split("\n"), output = [];
+                  //console.log(lines)
+                  tableCSV = document.getElementById("tableCSV").children[0]
+                  console.log(tableCSV)
+                  for (var i=0; i<lines.length; i++){
+                    csvLine = lines[i].split(",");
+                    console.log(csvLine)
+                    csvLinetr = document.createElement("tr")
+                    for(var j=0; j<csvLine.length; j++){
+                        a = document.createElement("td")
+                        a.innerHTML = csvLine[j]
+                        csvLinetr.appendChild(a)
+                    }
+                    a = document.createElement("td")
+                    a.innetHTML = "Waiting Confirmation"
+                    csvLinetr.appendChild(a)
+                    tableCSV.appendChild(csvLinetr)
+                  }
+             }
+              r.readAsText(f);
+            } else { 
+              alert("Failed to load file");
+            }
+          }
+          document.getElementById('fileinput').addEventListener('change', readSingleFile);
+
+                  function uploadHost(host){
+                    status = 0
+                    try{
+                      hostname_ = host.children[0].innerHTML
+                    }catch{
+                      hostname_ = ""
+                    }
+                    try{
+                      IP_ = host.children[1].innerHTML
+                    }catch{
+                      IP_ = ""
+                    }
+                    try{
+                      DNS_ = host.children[2].innerHTML
+                    }catch{
+                      DNS = ""
+                    }
+                    try{
+                      Port_ = host.children[3].innerHTML
+                    }catch{
+                      Port_ = ""
+                    }
+                    try{
+                      Type_ = host.children[4].innerHTML
+                    }catch{
+                      Type_ = ""
+                    }
+                    $.ajax({
+                      url: "/addhosts",
+                      type: 'POST',
+                      data: {
+                          hostname : hostname_,
+                          ip : IP_,
+                          dns : DNS_,
+                          port : Port_,
+                          type : Type_
+                      },
+                      success: function (response) {
+                        status = 1
+                        console.log(response)
+                        host.children[5].innerHTML = response["message"]
+                      },
+                      error: function (response) {
+                        status = 0
+                        console.log(response)
+                        host.children[5].innerHTML = response["message"]
+                      }
+                  });
+                      return status
+                  }
+                  function uploadHosts(){
+                      tableCSV = document.getElementById("tableCSV").children[0]
+                      console.log(tableCSV)
+                      for(i=1;i<tableCSV.childElementCount;i++){
+                        console.log(i)
+                        host = tableCSV.children[i]
+                        status = uploadHost(host)
+                      }
+                  }
+        </script>
+    </body>
+</html>
