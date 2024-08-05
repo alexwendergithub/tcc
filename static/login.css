@@ -17,6 +17,10 @@
     margin-top: 6px;
   }
 
+img.avatar {
+    width: 40%;
+  }
+
 input[type=text], input[type=password] {
     width: 100%;
     padding: 12px 20px;
@@ -67,6 +71,6 @@ button {
     width: 100%;
   }
 
-  button:hover {
+button:hover {
     opacity: 0.8;
   }

@@ -8,18 +8,25 @@
     <body class="background">
         <input type="file" id="fileinput" />
         <button onclick="uploadHosts()">Upload Hosts</button>
-        <table class="hoststable" id="tableCSV">
-          <tbody>
-            <tr>
-              <th>Hostname</th>
-              <th>IP</th>
-              <th>DNS</th>
-              <th>Port</th>
-              <th>Type</th>
-              <th>Status</th>
-            </tr>
-          </tbody>
-        </table>
+        <div class="hosttable-container">
+          <table class="hoststable" id="tableCSV">
+            <tbody>
+              <tr>
+                <th>Hostname</th>
+                <th>Status</th>
+                <th>IP</th>
+                <th>Port</th>
+                <th>Type</th>
+                <th>versão SNMP</th>
+                <th>community/securityname</th>
+                <th>protocolo (SNMPv3)</th>
+                <th>senha (SNMPv3)</th>
+                <th>protocolo (SNMPv3)</th>
+                <th>senha (SNMPv3)</th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <script>
           function readSingleFile(evt) {
             var f = evt.target.files[0]; 
@@ -35,83 +42,155 @@
                     csvLine = lines[i].split(",");
                     console.log(csvLine)
                     csvLinetr = document.createElement("tr")
-                    for(var j=0; j<csvLine.length; j++){
+                    for(var j=0; j<(12); j++){
+                      if(j==1){
                         a = document.createElement("td")
-                        a.innerHTML = csvLine[j]
+                        b = document.createElement("div")
+                        b.className = "waiting"
+                        a.appendChild(b)
                         csvLinetr.appendChild(a)
+                        continue;
+                      }
+                      if(j==5){
+                        select = document.createElement("select");
+                        const options = [
+                            "SNMP v1", 
+                            "SNMP v2", 
+                            "SNMP v3"
+                        ];
+                        n = 1;
+                        options.forEach((option) => {
+                          selectOptions = document.createElement("option");
+                          selectOptions.value = n;
+                          n++;
+                          selectOptions.textContent = option;
+                          select.appendChild(selectOptions);
+                        });
+                        if(csvLine[j] == 3|| csvLine[j] == "SNPMv1"){
+                          select.value = 3
+                        }else if(csvLine[j] == 2 || csvLine[j] == "SNPMv2"){
+                          select.value = 2
+                        }else {
+                          select.value = 1
+                        }
+                        a = document.createElement("td");
+                        a.appendChild(select);
+                        csvLinetr.appendChild(a);
+                        continue;
+                      }
+                        if(j<csvLine.length){
+                          a = document.createElement("td")
+                          a.innerHTML = csvLine[j]
+                          csvLinetr.appendChild(a)
+                        }else{
+                          a = document.createElement("td")
+                          a.innerHTML = "-"
+                          csvLinetr.appendChild(a)                         
+                        }
                     }
-                    a = document.createElement("td")
-                    a.innetHTML = "Waiting Confirmation"
-                    csvLinetr.appendChild(a)
                     tableCSV.appendChild(csvLinetr)
                   }
-             }
+              }
               r.readAsText(f);
             } else { 
               alert("Failed to load file");
             }
           }
+
           document.getElementById('fileinput').addEventListener('change', readSingleFile);
 
-                  function uploadHost(host){
-                    status = 0
-                    try{
-                      hostname_ = host.children[0].innerHTML
-                    }catch{
-                      hostname_ = ""
-                    }
-                    try{
-                      IP_ = host.children[1].innerHTML
-                    }catch{
-                      IP_ = ""
-                    }
-                    try{
-                      DNS_ = host.children[2].innerHTML
-                    }catch{
-                      DNS = ""
-                    }
-                    try{
-                      Port_ = host.children[3].innerHTML
-                    }catch{
-                      Port_ = ""
-                    }
-                    try{
-                      Type_ = host.children[4].innerHTML
-                    }catch{
-                      Type_ = ""
-                    }
-                    $.ajax({
-                      url: "/addhosts",
-                      type: 'POST',
-                      data: {
-                          hostname : hostname_,
-                          ip : IP_,
-                          dns : DNS_,
-                          port : Port_,
-                          type : Type_
-                      },
-                      success: function (response) {
-                        status = 1
-                        console.log(response)
-                        host.children[5].innerHTML = response["message"]
-                      },
-                      error: function (response) {
-                        status = 0
-                        console.log(response)
-                        host.children[5].innerHTML = response["message"]
-                      }
-                  });
-                      return status
+          function uploadHost(host){
+            status = 0
+            try{
+              hostname_ = host.children[0].innerHTML
+            }catch{
+              hostname_ = "-"
+            }
+            try{
+              IP_ = host.children[2].innerHTML
+            }catch{
+              IP_ = "-"
+            }
+            try{
+              Port_ = host.children[3].innerHTML
+            }catch{
+              Port_ = "-"
+            }
+            try{
+              Type_ = host.children[4].innerHTML
+            }catch{
+              Type_ = "-"
+            }
+            try{
+              SNMP_ = host.children[5].fristChild.value
+            }catch{
+              SNMP_ = "-"
+            }
+            try{
+              comunity_security_name_ = host.children[6].innerHTML
+            }catch{
+              comunity_security_name_ = "-"
+            }
+            try{
+              authpassphrase_ = host.children[7].innerHTML
+            }catch{
+              authpassphrase_ = "-"
+            }
+            try{
+              authprotocol_ = host.children[8].innerHTML
+            }catch{
+              authprotocol_ = "-"
+            }
+            try{
+              privpassphrase_ = host.children[9].innerHTML
+            }catch{
+              privpassphrase_ = "-"
+            }
+            try{
+              privprotocol_ = host.children[10].innerHTML
+            }catch{
+              privprotocol_ = "-"
+            }
+
+            $.ajax({
+              url: "/addhosts",
+              type: 'POST',
+              data: {
+                  hostname : hostname_,
+                  ip : IP_,
+                  port : Port_,
+                  type : Type_,
+                  SNMP: SNMP_,
+                  snmp_config: {
+                    comunity_security_name: comunity_security_name_,
+                    authpassphrase: authpassphrase_,
+                    authprotocol: authprotocol_,
+                    aprivpassphrase: aprivpassphrase_,
+                    privprotocol: privprotocol_,
                   }
-                  function uploadHosts(){
-                      tableCSV = document.getElementById("tableCSV").children[0]
-                      console.log(tableCSV)
-                      for(i=1;i<tableCSV.childElementCount;i++){
-                        console.log(i)
-                        host = tableCSV.children[i]
-                        status = uploadHost(host)
-                      }
-                  }
+              },
+              success: function (response) {
+                status = 1
+                console.log(response)
+                host.children[2].innerHTML = response["message"]
+              },
+              error: function (response) {
+                status = 0
+                console.log(response)
+                host.children[2].innerHTML = "Error - " + response["message"]
+              }
+          });
+              return status
+          }
+          function uploadHosts(){
+              tableCSV = document.getElementById("tableCSV").children[0]
+              console.log(tableCSV)
+              for(i=1;i<tableCSV.childElementCount;i++){
+                console.log(i)
+                host = tableCSV.children[i]
+                status = uploadHost(host)
+              }
+          }
         </script>
     </body>
 </html>

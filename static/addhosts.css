@@ -1,12 +1,84 @@
+:root {
+  --primary-color: white;
+  --hosttable-status-uploaded-color: greenyellow;
+  --hosttable-status-failed-color: #ff0033;
+  --hosttable-status-waiting-color: lightgray;
+  /*--hosttable-background-color-container : #3d4449;
+  --hosttable-background-color-container-secondary : #2a3338;*/
+
+    --hosttable-background-color-container : #000000;
+  --hosttable-background-color-container-secondary : #c3271d;
+  --hosttable-padding: 12px;
+  --hosttable-padding-s: 6px;
+  --hosttable-padding-xs: 2px;
+
+  --hosttable-border-radius: 3px;
+
+  --hosttable-odd-row-color: var(--hosttable-background-color-container);
+  --hosttable-even-row-color: var(--hosttable-background-color-container-secondary);
+
+  --hosttable-text-color: var(--primary-color);
+}
+
 .background {
     width: 100%; /* Full width */
     height: 100%; /* Full height */
     background-color: #1b1f27;
 }
 
-.welcome {
-    text-align: center;
-    width: fill;
+.hosttable-container {
+  background-color: var(--hosttable-background-color-container);
+  border-radius: var(--hosttable-border-radius);
+  color: var(--hosttable-text-color);
+  min-width: 950px;
+  margin: 0 auto;
+}
+
+tr:nth-child(odd) {
+  background-color: var(--hosttable-odd-row-color);
+}
+
+tr:nth-child(even) {
+  background-color: var(--hosttable-even-row-color);
+}
+
+.uploaded::after {
+  content: "Uploaded";
+  color: var(--hosttable-status-uploaded-color);
+}
+
+.failed::after {
+  content: "Erro";
+  color: var(--hosttable-status-failed-color);
+}
+
+.waiting::after {
+  content: "Esperando upload";
+  color: var(--hosttable-status-waiting-color);
+}
+
+.waiting::before
+,.failed::before
+,.uploaded::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 10px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.uploaded::before {
+  background-color: var(--hosttable-status-uploaded-color);
+}
+
+.failed::before {
+  background-color: var(--hosttable-status-failed-color);
+}
+
+.waiting::before {
+  background-color: var(--hosttable-status-waiting-color);
 }
 
 .center-div {
@@ -46,7 +118,12 @@ img {
     max-width: 100%;
     width: fill;
 }
-button {
+
+  .hoststable {
+    width: 100%;
+  }
+
+  button {
     background-color: #5568fe;
     color: white;
     padding: 14px 20px;
@@ -60,23 +137,3 @@ button {
     opacity: 0.8;
   }
   
-  .hoststable {
-    width: 100%;
-  }
-
-  td, th {
-    border: 1px solid #ddd;
-    padding: 8px;
-  }
-  
-  tr:nth-child(even){background-color: #f2f2f2;}
-  
-  tr:hover {background-color: #ddd;}
-  
-  th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: #5568fe;
-    color: white;
-  }

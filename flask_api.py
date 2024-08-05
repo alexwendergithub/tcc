@@ -16,8 +16,9 @@ def login():
         print(request.form)
         username = request.form["username"]
         password = request.form["password"]
-        zabbix_connection = zabbix_api(login = username,password = password)
-        authtoken = zabbix_connection.AUTHTOKEN
+        #zabbix_connection = zabbix_api(login = username,password = password)
+        #authtoken = zabbix_connection.AUTHTOKEN
+        authtoken = "hehe"
         print(request.form)
         if authtoken is not None:
             session["token"] = authtoken
