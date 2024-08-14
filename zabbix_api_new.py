@@ -12,7 +12,7 @@ class zabbix_api:
                         "jsonrpc": "2.0",
                         "method": "user.login",
                         "params": {
-                            "user": self.USERNAME,
+                            "username": self.USERNAME,
                             "password": password},
                         "id": 1
                     })
@@ -159,12 +159,12 @@ class zabbix_api:
                         {
                             "groupid": "4"
                         }
-                    ]
-                },
-                "templates": [
+                    ],
+                    "templates": [
                     {
                         "templateid": params["template"]
-                    }],
+                    }]
+                },
                 "id": 1,
                 "auth": self.AUTHTOKEN
             }
