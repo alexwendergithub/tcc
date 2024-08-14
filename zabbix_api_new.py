@@ -2,16 +2,8 @@ import requests
 import json
 
 class zabbix_api:
-
-    templates = {
-        "switch": 11111,
-        "router": 22222,
-        "impressora": 33333,
-        "servidor": 44444,
-        "outro": 55555
-    }
     
-    def __init__(self, url="http://horusiff.ddns.net/api_jsonrpc.php",login="Admin",password="x9v4c1l4um!",authtoken=None):
+    def __init__(self, url="http://10.18.0.24/api_jsonrpc.php",login="Admin",password="zabbix",authtoken=None):
         if authtoken==None:
             self.ZABBIX_API_URL = url
             self.USERNAME = login
@@ -81,7 +73,6 @@ class zabbix_api:
                         "main": 1,
                         "useip": 1,
                         "ip": params["ip"],
-                        "dns": params["dns"],
                         "port": params["port"]
                     }
                 ],
@@ -126,6 +117,28 @@ class zabbix_api:
         return r.json()
 
     def add_host_snmp(self, params, ip="horusiff.ddns.net",port=161,dns="", zabbix_type=2):
+        details = {}
+        if (params["SNMP"] == "1"):
+            details = {
+                "version": 1,
+                "bulk": 0,
+                "community": params["snmp_config[comunity_security_name]"]
+            }
+        elif (params["SNMP"] == "2"):
+            details = {
+                "version": 2,
+                "bulk": 0,
+                "community": params["snmp_config[comunity_security_name]"]
+            }
+        elif (params["SNMP"] == "3"):
+            details = {
+                "version": 3,
+                "bulk": 0,
+                "securityname": params["snmp_config[comunity_security_name]"],
+                "contextname": "",
+                "securitylevel": 1
+            }
+        print(details)
         request_json = {
                 "jsonrpc": "2.0",
                 "method": "host.create",
@@ -137,15 +150,9 @@ class zabbix_api:
                             "main": 1,
                             "useip": 1,
                             "ip": params["ip"],
-                            "dns": params["dns"],
+                            "dns": "",
                             "port": params["port"],
-                            "details": {
-                                "version": 3,
-                                "bulk": 0,
-                                "securityname": "mysecurityname",
-                                "contextname": "",
-                                "securitylevel": 1
-                            }
+                            "details": details
                         }
                     ],
                     "groups": [
@@ -154,9 +161,14 @@ class zabbix_api:
                         }
                     ]
                 },
+                "templates": [
+                    {
+                        "templateid": params["template"]
+                    }],
                 "id": 1,
                 "auth": self.AUTHTOKEN
             }
+        print(request_json)
         r = requests.post(self.ZABBIX_API_URL,json=request_json)
         print(json.dumps(r.json(), indent=4, sort_keys=True))
         return r.json()
@@ -164,16 +176,46 @@ class zabbix_api:
     def add_template(self, host, template):
         self.name = host
 
-    def get_templates(self):
+    def get_templates_to_show(self):
+        templates = [[16,"Templates/SAN"],[17,"Templates/Power"],[11,"Templates/Server hardware"]]
+        response = {}
+        for template_id in templates:
+            response[template_id[1]] = self.get_templates(template_id[0])
+        return response
+        
+    def get_templates(self,id):
         request_json = {
                 "jsonrpc": "2.0",
                 "method": "template.get",
                 "params": {
-                    "output": "extend"
-                },
+                    "output":["name","templateid"],
+                    "groupids": id
+                    },
                 "id": 1,
                 "auth": self.AUTHTOKEN
         }
+        print(request_json)
         r = requests.post(self.ZABBIX_API_URL,json=request_json)
+        print(r)
         print(json.dumps(r.json(), indent=4, sort_keys=True))
-        return r.json()
+        return r.json()["result"]
+
+    def create_user(self,params):
+        request_json = {
+                "jsonrpc": "2.0",
+                "method": "user.create",
+                "params": {
+                    "username": params["username"],
+                    "passwd": params["password"],
+                    "roleid": params["roleid"],
+                    "usrgrps": [
+                        {
+                            "usrgrpid": params["usrgrpid"]
+                        }
+                    ]
+                    },
+                "id": 1,
+                "auth": self.AUTHTOKEN
+        }
+        print(request_json)
+        r = requests.post(self.ZABBIX_API_URL,json=request_json)

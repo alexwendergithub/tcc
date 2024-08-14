@@ -16,9 +16,8 @@ def login():
         print(request.form)
         username = request.form["username"]
         password = request.form["password"]
-        #zabbix_connection = zabbix_api(login = username,password = password)
-        #authtoken = zabbix_connection.AUTHTOKEN
-        authtoken = "hehe"
+        zabbix_connection = zabbix_api(login = username,password = password)
+        authtoken = zabbix_connection.AUTHTOKEN
         print(request.form)
         if authtoken is not None:
             session["token"] = authtoken
@@ -53,6 +52,17 @@ def hosts():
     else:
         if "token" in session:
             return render_template("addhosts.html")
+        else:
+            return redirect(url_for("login"))
+
+@app.route('/templates', methods = ['POST', "GET"])
+def templates():
+    if request.method == "POST":
+        if "token" in session:
+            print(request.form)
+            zabbix_connection = zabbix_api(authtoken = session["token"])
+            response = zabbix_connection.get_templates_to_show()
+            return response
         else:
             return redirect(url_for("login"))
 
