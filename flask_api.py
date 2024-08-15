@@ -55,6 +55,23 @@ def hosts():
         else:
             return redirect(url_for("login"))
 
+@app.route('/addusers', methods = ["POST", "GET"])
+def users():
+    print("INSIDE ADDUSERS")
+    if request.method == "POST":
+        if "token" in session:
+            print(request.form)
+            zabbix_connection = zabbix_api(authtoken = session["token"])
+            status = zabbix_connection.add_user(request.form)
+            return status
+        else:
+            return redirect(url_for("login"))        
+    else:
+        if "token" in session:
+            return render_template("addusers.html")
+        else:
+            return redirect(url_for("login"))
+
 @app.route('/templates', methods = ['POST', "GET"])
 def templates():
     if request.method == "POST":

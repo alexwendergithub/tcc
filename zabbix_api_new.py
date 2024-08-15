@@ -3,7 +3,7 @@ import json
 
 class zabbix_api:
     
-    def __init__(self, url="http://10.18.0.24/api_jsonrpc.php",login="Admin",password="zabbix",authtoken=None):
+    def __init__(self, url="http://150.136.38.48/api_jsonrpc.php",login="Admin",password="zabbix",authtoken=None):
         if authtoken==None:
             self.ZABBIX_API_URL = url
             self.USERNAME = login
@@ -12,7 +12,7 @@ class zabbix_api:
                         "jsonrpc": "2.0",
                         "method": "user.login",
                         "params": {
-                            "username": self.USERNAME,
+                            "user": self.USERNAME,
                             "password": password},
                         "id": 1
                     })
@@ -200,7 +200,7 @@ class zabbix_api:
         print(json.dumps(r.json(), indent=4, sort_keys=True))
         return r.json()["result"]
 
-    def create_user(self,params):
+    def add_user(self,params):
         request_json = {
                 "jsonrpc": "2.0",
                 "method": "user.create",

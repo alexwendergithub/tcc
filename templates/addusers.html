@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script type="text/javascript" src="{{ url_for('static', filename = 'jquery-3.7.1.js') }}"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='/addusers.css') }}">
+    </head>
+    <body class="background">
+        <div class="form-div">
+            <form action="/addusers" method="POST">
+                <div class="center-div">
+                    <div class="container">
+                        <h1>Registro de usuário</h1>
+                        <hr>
+
+                        <label for="username"><b>Username</b></label>
+                        <input type="text" placeholder="Enter Email" name="email" id="email" required>
+                        
+                        <label for="email"><b>Email</b></label>
+                        <input type="text" placeholder="Enter Email" name="email" id="email" required>
+                    
+                        <label for="psw"><b>Password</b></label>
+                        <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
+
+                        <label for="psw-repeat"><b>Repeat Password</b></label>
+                        <input type="password" placeholder="Repeat Password" name="psw-repeat" id="psw-repeat" required>
+                        <hr>
+                        <label for="nivel-de-permissao"><b>Nível de permissão</b></label>
+                        <div class="custom-select">
+                            <select>
+                                <option value=0>Usuário padrão</option>
+                                <option value=1>Admin</option>
+                                <option value=2>Super Admin</option>
+                            </select>
+                        </div>
+                        <hr>
+                        <button type="submit" class="registerbtn">Registrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>
