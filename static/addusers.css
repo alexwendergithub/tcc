@@ -79,17 +79,52 @@ button:hover {
   }
 
   .custom-select {
-    min-width: 350px;
+    float: center;
+    width: 100%;
+    margin: auto;
+    margin-top: 6px;
   }
   
   .custom-select select {
+    width:100%;
     appearance: none;
-    width: 100%;
     font-size: 1.15rem;
-    padding: 0.675em 6em 0.675em 1em;
-    background-color: #fff;
+    padding: 0.675em 0em 0.675em 1em;
+    background-color: #1b1f27;
     border: 1px solid #caced1;
+    display: inline-block;
+    color: #ffffff;
+    box-sizing: border-box;
     border-radius: 0.25rem;
-    color: #000;
     cursor: pointer;
+  }
+
+  .error-message {
+    background-color: #fce4e4;
+    border: 1px solid #fcc2c3;
+    padding: 20px 30px;
+  }
+
+  .error-text {
+    color: #cc0033;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    vertical-align: middle;
+    text-shadow: 1px 1px rgba(250,250,250,.3);
+  }
+
+  .ok-message {
+    background-color: #e4fce4;
+    border: 1px solid #c2fcc3;
+    padding: 20px 30px;
+  }
+
+  .ok-text {
+    color: #00ee22;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    vertical-align: middle;
+    text-shadow: 1px 1px rgba(250,250,250,.3);
   }

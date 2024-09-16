@@ -3,7 +3,7 @@ import json
 
 class zabbix_api:
     
-    def __init__(self, url="http://150.136.38.48/api_jsonrpc.php",login="Admin",password="zabbix",authtoken=None):
+    def __init__(self, url="http://10.18.0.24/api_jsonrpc.php",login="Admin",password="zabbix",authtoken=None):
         if authtoken==None:
             self.ZABBIX_API_URL = url
             self.USERNAME = login
@@ -12,7 +12,7 @@ class zabbix_api:
                         "jsonrpc": "2.0",
                         "method": "user.login",
                         "params": {
-                            "user": self.USERNAME,
+                            "username": self.USERNAME,
                             "password": password},
                         "id": 1
                     })
@@ -177,7 +177,7 @@ class zabbix_api:
         self.name = host
 
     def get_templates_to_show(self):
-        templates = [[16,"Templates/SAN"],[17,"Templates/Power"],[11,"Templates/Server hardware"]]
+        templates = [[16,"SAN"],[17,"Power"],[11,"Server hardware"]]
         response = {}
         for template_id in templates:
             response[template_id[1]] = self.get_templates(template_id[0])
@@ -201,6 +201,7 @@ class zabbix_api:
         return r.json()["result"]
 
     def add_user(self,params):
+        roleid_tousrgrp = {"1":"7","2":"7","3":"7",1:"7",2:"7",3:"7"}
         request_json = {
                 "jsonrpc": "2.0",
                 "method": "user.create",
@@ -210,7 +211,7 @@ class zabbix_api:
                     "roleid": params["roleid"],
                     "usrgrps": [
                         {
-                            "usrgrpid": params["usrgrpid"]
+                            "usrgrpid": roleid_tousrgrp[params["roleid"]]
                         }
                     ]
                     },
@@ -219,3 +220,31 @@ class zabbix_api:
         }
         print(request_json)
         r = requests.post(self.ZABBIX_API_URL,json=request_json)
+        print(r)
+        print(json.dumps(r.json(), indent=4, sort_keys=True))
+        try:
+            return r.json()
+        except:
+            try:
+                return r.json()["error"]
+            except:
+                json_error = {"error":{"data":"Incapaz de criar usuário no zabbix"}}
+                return json_error
+    
+    def check_token_level(self):
+        request_json = {
+            "jsonrpc": "2.0",
+            "method": "user.checkAuthentication",
+            "params": {
+                "sessionid": self.AUTHTOKEN
+            },
+            "id": 1
+        }
+        r = requests.post(self.ZABBIX_API_URL,json=request_json)
+        print(r)
+        print(json.dumps(r.json(), indent=4, sort_keys=True))
+        is_admin = False
+        admin_acess = ["2","3"]
+        if r.json()["result"]["roleid"] in admin_acess:
+            is_admin = True
+        return is_admin

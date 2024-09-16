@@ -4,39 +4,73 @@
         <meta charset="utf-8">
         <script type="text/javascript" src="{{ url_for('static', filename = 'jquery-3.7.1.js') }}"></script>
         <link rel="stylesheet" href="{{ url_for('static', filename='/addusers.css') }}">
+        <script>
+            const queryString = window.location.search;
+            console.log(queryString);
+            const urlParams = new URLSearchParams(queryString);
+            const status = urlParams.get('status')
+        </script>
     </head>
     <body class="background">
         <div class="form-div">
             <form action="/addusers" method="POST">
-                <div class="center-div">
-                    <div class="container">
+                <div id="center-div" class="center-div">
+                    <div id="container" class="container">
                         <h1>Registro de usuário</h1>
                         <hr>
 
                         <label for="username"><b>Username</b></label>
-                        <input type="text" placeholder="Enter Email" name="email" id="email" required>
+                        <input type="text" placeholder="Enter Username" name="username" id="username" required>
                         
                         <label for="email"><b>Email</b></label>
                         <input type="text" placeholder="Enter Email" name="email" id="email" required>
                     
-                        <label for="psw"><b>Password</b></label>
-                        <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
+                        <label for="psw"><b>Senha</b></label>
+                        <input type="password" placeholder="Enter Password" name="password" id="password" required>
 
-                        <label for="psw-repeat"><b>Repeat Password</b></label>
-                        <input type="password" placeholder="Repeat Password" name="psw-repeat" id="psw-repeat" required>
-                        <hr>
+                        <label for="psw-repeat"><b>Repetir senha</b></label>
+                        <input type="password" placeholder="Repeat Password" name="password-repeat" id="password-repeat" required>
+
                         <label for="nivel-de-permissao"><b>Nível de permissão</b></label>
                         <div class="custom-select">
-                            <select>
-                                <option value=0>Usuário padrão</option>
-                                <option value=1>Admin</option>
-                                <option value=2>Super Admin</option>
+                            <select name="roleid" id="roleid">
+                                <option value=1>Usuário padrão</option>
+                                <option value=2>Admin</option>
+                                <option value=3>Super Admin</option>
                             </select>
                         </div>
+                        <label for="passowrd-adm"><b>Senha Admin</b></label>
+                        <input type="password" placeholder="Senha do admin" name="password-admin" id="password-admin" required>
                         <hr>
                         <button type="submit" class="registerbtn">Registrar</button>
                     </div>
                 </div>
+                <script>
+                    if( status != null){
+                        status_div = document.createElement("div")
+                        div_text = document.createElement("div")
+                        status_div.appendChild(div_text)
+                        if(status == "1" || status == 1){
+                            status_div.classList.add("error-message")
+                            div_text.classList.add("error-text")
+                            div_text.innerHTML = "Senha tem que ser igual nos 2 campos"
+                        }else if(status == "2" || status == 2){
+                            status_div.classList.add("error-message")
+                            div_text.classList.add("error-text")
+                            div_text.innerHTML = "Falha ao criar usuário:"+ urlParams.get("error")
+                        }else if(status == "4" || status == 4){
+                            status_div.classList.add("error-message")
+                            div_text.classList.add("error-text")
+                            div_text.innerHTML = "Senha precisa conter 12 characters, um character especial,número,maiúscula e minúscula"
+                        }else if(status == "0" || status == 0){
+                            status_div.classList.add("ok-message")
+                            div_text.classList.add("ok-text")
+                            div_text.innerHTML = "Usuário criado com sucesso"
+                        }
+                        container = document.getElementById("center-div")
+                        container.appendChild(status_div)
+                    }
+                </script>
             </form>
         </div>
     </body>

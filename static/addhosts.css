@@ -3,11 +3,11 @@
   --hosttable-status-uploaded-color: greenyellow;
   --hosttable-status-failed-color: #ff0033;
   --hosttable-status-waiting-color: lightgray;
-  /*--hosttable-background-color-container : #3d4449;
-  --hosttable-background-color-container-secondary : #2a3338;*/
+  --hosttable-background-color-container : #3d4449;
+  --hosttable-background-color-container-secondary : #2a3338;
 
-    --hosttable-background-color-container : #000000;
-  --hosttable-background-color-container-secondary : #c3271d;
+  /* --hosttable-background-color-container : #000000;
+  --hosttable-background-color-container-secondary : #c3271d; */
   --hosttable-padding: 12px;
   --hosttable-padding-s: 6px;
   --hosttable-padding-xs: 2px;
@@ -136,4 +136,24 @@ img {
   button:hover {
     opacity: 0.8;
   }
+
+  .custom-select {
+    float: center;
+    width: fill;
+    margin: auto;
+    background-color: inherit;
+    margin-top: 6px;
+  }
   
+  .custom-select select {
+    width:100%;
+    appearance: none;
+    padding: 0.3375em 0em 0.3375em 0.5em;
+    border: 1px solid #caced1;
+    background-color: inherit;
+    display: inline-block;
+    color: #ffffff;
+    box-sizing: border-box;
+    border-radius: 0.25rem;
+    cursor: pointer;
+  }

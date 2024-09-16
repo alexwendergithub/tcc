@@ -3,15 +3,30 @@
     <head>
         <meta charset="utf-8">
         <link rel="stylesheet" href="{{ url_for('static', filename='/login.css') }}">
+        <script>
+            const queryString = window.location.search;
+            console.log(queryString);
+            const urlParams = new URLSearchParams(queryString);
+            const validation = urlParams.get('isAdmin')
+            console.log(validation);
+        </script>
     </head>
     <body class="background">
-        <div class="center-div">
+        <div id="centerdiv" class="center-div">
             <a href="addhosts">
                 <button>Adicionar Hosts</button>
             </a>
-            <a href="addusers">
+            <a id="addusers" href="addusers">
                 <button>Criação de Usuário</button>
             </a>
         </div>
+        <script>
+            if(validation){
+                isadmin = document.createElement("h2");
+                isadmin.innerHTML = "Usuário não possui permissão para adicionar outros usuários"
+                centerdiv = document.getElementById("centerdiv");
+                centerdiv.appendChild(isadmin);
+            }
+        </script>
     </body>
 </html>
