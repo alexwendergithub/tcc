@@ -177,7 +177,7 @@ class zabbix_api:
         self.name = host
 
     def get_templates_to_show(self):
-        templates = [[16,"SAN"],[17,"Power"],[11,"Server hardware"]]
+        templates = [[16,"SAN"],[18,"Power"],[11,"Server hardware"]]
         response = {}
         for template_id in templates:
             response[template_id[1]] = self.get_templates(template_id[0])

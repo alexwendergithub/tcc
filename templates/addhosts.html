@@ -22,7 +22,7 @@
           function select_function(element){
             console.log(element.value)
             for(i=0;i<element.childElementCount;i++){
-              select = document.getElementById(element.id+i)
+              select = document.getElementById(element.id+"_"+i)
               if(element.value == i){
                 select.style.display = 'block';
               }else{
@@ -47,11 +47,7 @@
                 <th>Type</th>
                 <th>Type2</th>
                 <th>versão SNMP</th>
-                <th>community/securityname</th>
-                <th>protocolo (SNMPv3)</th>
-                <th>senha (SNMPv3)</th>
-                <th>protocolo (SNMPv3)</th>
-                <th>senha (SNMPv3)</th>
+                <th>community</th>
               </tr>
             </tbody>
           </table>
@@ -71,12 +67,14 @@
                   tableCSV = document.getElementById("tableCSV").children[0]
                   console.log(tableCSV)
                   for (var i=0; i<lines.length; i++){
+                    template_to_use=0
+                    template_group_to_use=0
                     csvLine = lines[i].split(",");
                     console.log(csvLine)
                     csvLinetr = document.createElement("tr")
                     //contador do csv
                     k = 0;
-                    for(var j=0; j<(12); j++){
+                    for(var j=0; j<8; j++){
                       if(j==1){
                         a = document.createElement("td")
                         b = document.createElement("div")
@@ -103,7 +101,6 @@
                         a.appendChild(select);
                         a.classList.add("custom-select")
                         csvLinetr.appendChild(a); 
-                        k++;
                         continue;
                       }
                       if (j==5){
@@ -111,27 +108,36 @@
                         n=0
                         templates_groups_keys.forEach((option) => {
                           select = document.createElement("select");
-                          select.id = "type_"+i+""+n
+                          select.id = "type_"+i+"_"+n
                           templates = templates_groups[option]
                           templates.forEach((template) =>  {
+                            //adicionar verificacao aqui e salvar template_group_e_template_que_foi_usado
+                            if(template["name"].toLowerCase() === csvLine[k].toLowerCase()){
+                              console.log("csvLine["+k+"]"+csvLine[k])
+                              template_to_use = template["templateid"]
+                              template_group_to_use = n
+                              select.value = template["templateid"]
+                            }
+                            //senao usar o primeiro template
                             selectOptions = document.createElement("option");
                             selectOptions.value = template["templateid"];
-                            selectOptions.textContent = template["name"];;
+                            selectOptions.textContent = template["name"];
                             select.appendChild(selectOptions);
                           });
                           n++;
+                          console.log(select)
                           a.appendChild(select);
                           a.classList.add("custom-select")
                         });
                         csvLinetr.appendChild(a);  
+                        k++;
                         continue;
                       }
                       if(j==6){
                         select = document.createElement("select");
                         const options = [
                             "SNMP v1", 
-                            "SNMP v2", 
-                            "SNMP v3"
+                            "SNMP v2"
                         ];
                         n = 1;
                         options.forEach((option) => {
@@ -141,9 +147,7 @@
                           selectOptions.textContent = option;
                           select.appendChild(selectOptions);
                         });
-                        if(csvLine[k] == 3|| csvLine[k] == "SNPMv3"){
-                          select.value = 3
-                        }else if(csvLine[k] == 2 || csvLine[k] == "SNPMv2"){
+                        if(csvLine[k] == 2 || csvLine[k] == "SNPMv2"){
                           select.value = 2
                         }else {
                           select.value = 1
@@ -167,6 +171,13 @@
                       }
                     }
                     tableCSV.appendChild(csvLinetr)
+                    type = document.getElementById("type_"+i)
+                    type.value = template_group_to_use
+                    if(template_to_use != 0){
+                      type2 = document.getElementById("type_"+i+"_"+template_group_to_use)
+                      type2.value = template_to_use
+                    }
+                    select_function(type)
                   }
               }
               r.readAsText(f);

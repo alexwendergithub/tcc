@@ -65,29 +65,34 @@ def addusers():
             print(request.form)
             import re
             pattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
-            if not (re.fullmatch(pattern, password)):
+            if not (re.fullmatch(pattern, request.form["password"])):
                 return redirect(url_for("addusers", status=4))
             if (request.form["password"] != request.form["password-repeat"]):
                 return redirect(url_for("addusers", status=1))
-            zabbix_connection = zabbix_api(authtoken = session["token"])
-            zabbix_response = zabbix_connection.add_user(request.form)
-            response_status = 0
-            error_message = 0
-            print("----zabbix response----")
-            print(zabbix_response)
-            if not("result" in zabbix_response):
-                error_message = zabbix_response["error"]["data"]
-                response_status = 2
-                return redirect(url_for("addusers",status=response_status,error=error_message))
             grafana_response = add_user_grafana(session["username"],request.form["password-admin"],request.form)
             print("----grafana repsonse----")
             print(grafana_response)
-
-            if error_message == 0:
-                return redirect(url_for("addusers",status=response_status))
-            else:
+            if grafana_response["message"]!="User created":
+                response_status = 3
+                error_message = grafana_response["message"]
                 return redirect(url_for("addusers",status=response_status,error=error_message))
-            return status
+            else:
+                zabbix_connection = zabbix_api(authtoken = session["token"])
+                zabbix_response = zabbix_connection.add_user(request.form)
+                response_status = 0
+                error_message = 0
+                print("----zabbix response----")
+                print(zabbix_response)
+                if not("result" in zabbix_response):
+                    error_message = zabbix_response["error"]["data"]
+                    response_status = 2
+                    return redirect(url_for("addusers",status=response_status,error=error_message))
+            
+                if error_message == 0:
+                    return redirect(url_for("addusers",status=response_status))
+                else:
+                    return redirect(url_for("addusers",status=response_status,error=error_message))
+                return status
         else:
             return redirect(url_for("login"))        
     else:
