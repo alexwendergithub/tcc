@@ -271,12 +271,12 @@
               success: function (response) {
                 status = 1
                 console.log(response)
-                host.children[2].innerHTML = response["message"]
+                host.children[1].innerHTML = response["message"]
               },
               error: function (response) {
                 status = 0
                 console.log(response)
-                host.children[2].innerHTML = "Error - " + response["message"]
+                host.children[1].innerHTML = "Error - " + response["message"]
               }
           });
               return status
