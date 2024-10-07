@@ -34,7 +34,10 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='/addhosts.css') }}">
     </head>
     <body class="background">
-        <input type="file" id="fileinput" />
+       <label class="upload">
+          Upload do arquivo CSV
+          <input class="custom-button" type="file" id="fileinput" style="display: none;"/>
+       </label>
         <button onclick="uploadHosts()">Upload Hosts</button>
         <div class="hosttable-container">
           <table class="hoststable" id="tableCSV">
@@ -44,8 +47,8 @@
                 <th>Status</th>
                 <th>IP</th>
                 <th>Port</th>
-                <th>Type</th>
-                <th>Type2</th>
+                <th>Grupo de Temp.</th>
+                <th>Template</th>
                 <th>versão SNMP</th>
                 <th>community</th>
               </tr>
