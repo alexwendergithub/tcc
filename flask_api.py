@@ -3,6 +3,7 @@ from flask import request
 from flask_cors import CORS
 from zabbix_api_new import *
 from grafana_api import *
+import os
 
 app = Flask(__name__)
 CORS(app)

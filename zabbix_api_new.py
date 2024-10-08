@@ -1,9 +1,11 @@
 import requests
 import json
+import os
+url_zabbix="http://"+os.getenv("URL_ZABBIX","10.18.0.24")+"/api_jsonrpc.php"
 
 class zabbix_api:
     
-    def __init__(self, url="http://10.18.0.24/api_jsonrpc.php",login="Admin",password="zabbix",authtoken=None):
+    def __init__(self, url=url_zabbix,login="Admin",password="zabbix",authtoken=None):
         if authtoken==None:
             self.ZABBIX_API_URL = url
             self.USERNAME = login

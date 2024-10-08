@@ -1,8 +1,9 @@
 import requests
 import json
+import os
 
 def add_user_grafana(username,password,new_user):
-    grafana_url = "10.18.0.24:3000"
+    grafana_url = os.getenv("URL_GRAFANA","10.18.0.24")+":3000"
 
     base_url = "http://{}:{}@{}".format(username, password, grafana_url)
 
