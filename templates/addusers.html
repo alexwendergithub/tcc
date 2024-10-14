@@ -12,6 +12,13 @@
         </script>
     </head>
     <body class="background">
+        <div class="topbar">
+            <img src="{{url_for('static', filename='horus.png')}}" class="imgbar">
+            <form action="/signout" method="POST">
+              <button class="signout" type="submit">Deslogar</button>
+              <input id="auth_token" type="hidden">
+            </form>
+          </div>
         <div class="form-div">
             <form action="/addusers" method="POST">
                 <div id="center-div" class="center-div">
@@ -54,7 +61,7 @@
                             status_div.classList.add("error-message")
                             div_text.classList.add("error-text")
                             div_text.innerHTML = "Senha tem que ser igual nos 2 campos"
-                        }else if(status == "2" || status == 2){
+                        }else if(status == "2" || status == 2 || status == "3" || status == 3){
                             status_div.classList.add("error-message")
                             div_text.classList.add("error-text")
                             div_text.innerHTML = "Falha ao criar usuário:"+ urlParams.get("error")

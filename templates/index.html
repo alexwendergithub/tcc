@@ -12,6 +12,13 @@
         </script>
     </head>
     <body class="background">
+        <div class="topbar">
+            <img src="{{url_for('static', filename='horus.png')}}" class="imgbar">
+            <form action="/signout" method="POST">
+              <button class="signout" type="submit">Deslogar</button>
+              <input id="auth_token" type="hidden">
+            </form>
+          </div>
         <div id="centerdiv" class="center-div">
             <a href="addhosts">
                 <button>Adicionar Hosts</button>

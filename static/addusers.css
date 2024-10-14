@@ -9,6 +9,22 @@
     width: fill;
 }
 
+.topbar{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.signout{
+  width: 100px;
+  background-color: red;
+}
+
+.imgbar{
+  width: 50px;
+  height:50px;
+}
+
 .center-div {
     float: center;
     width: 50%;

@@ -30,18 +30,161 @@
               }
             }
           }
+
+          function DownloadPlanilha(){
+            const rows = [
+                ["NOME", "IP", "PORTA","TEMPLATE","VERSAO SNMP","SNMP COMUNITY"]
+            ];
+            let csvContent = "data:text/csv;charset=utf-8," 
+            + rows.map(e => e.join(",")).join("\n");
+            var encodedUri = encodeURI(csvContent);
+            window.open(encodedUri);
+          }
+
+          function InserirNaPlanilha(){
+            tBody = document.getElementById("tableBody")
+            console.log(templates_groups)
+            templates_groups_keys = Object.keys(templates_groups)
+            console.log(templates_groups_keys)
+            csvLinetr = document.createElement("tr")
+            k=0
+            template_to_use=0
+            template_group_to_use=0
+            csvLine = ["-","-","-","-","1","-"]
+            for(var j=0; j<8; j++){
+              if(j==1){
+                a = document.createElement("td")
+                b = document.createElement("div")
+                b.className = "waiting"
+                a.appendChild(b)
+                csvLinetr.appendChild(a)
+                continue;
+              }
+              if(j==4){
+                select = document.createElement("select");
+                select.id = "type_"+(tBody.childElementCount-1)
+                select.setAttribute("onchange","select_function(this)")
+                n = 0;
+                console.log(templates_groups_keys);
+                for(l=0;l<templates_groups_keys.length;l++){
+                  selectOptions = document.createElement("option");
+                  selectOptions.value = n;
+                  n++;
+                  selectOptions.textContent = templates_groups_keys[l];
+                  console.log(selectOptions);
+                  select.appendChild(selectOptions);
+                }
+                a = document.createElement("td");
+                a.appendChild(select);
+                a.classList.add("custom-select")
+                csvLinetr.appendChild(a); 
+                continue;
+              }
+              if (j==5){
+                a = document.createElement("td");
+                n=0
+                templates_groups_keys.forEach((option) => {
+                  select = document.createElement("select");
+                  select.id = "type_"+(tBody.childElementCount-1)+"_"+n
+                  templates = templates_groups[option]
+                  templates.forEach((template) =>  {
+                    //adicionar verificacao aqui e salvar template_group_e_template_que_foi_usado
+                    try{
+                      if(template["name"].toLowerCase() === csvLine[k].toLowerCase()){
+                      console.log("csvLine["+k+"]"+csvLine[k])
+                      template_to_use = template["templateid"]
+                      template_group_to_use = n
+                      select.value = template["templateid"]
+                      }
+                    }catch{
+
+                    }
+                    //senao usar o primeiro template
+                    selectOptions = document.createElement("option");
+                    selectOptions.value = template["templateid"];
+                    selectOptions.textContent = template["name"];
+                    select.appendChild(selectOptions);
+                  });
+                  n++;
+                  console.log(select)
+                  a.appendChild(select);
+                  a.classList.add("custom-select")
+                });
+                csvLinetr.appendChild(a);  
+                k++;
+                continue;
+              }
+              if(j==6){
+                select = document.createElement("select");
+                const options = [
+                    "SNMP v1", 
+                    "SNMP v2"
+                ];
+                n = 1;
+                options.forEach((option) => {
+                  selectOptions = document.createElement("option");
+                  selectOptions.value = n;
+                  n++;
+                  selectOptions.textContent = option;
+                  select.appendChild(selectOptions);
+                });
+                if(csvLine[k] == 2 || csvLine[k] == "SNPMv2"){
+                  select.value = 2
+                }else {
+                  select.value = 1
+                }
+                a = document.createElement("td");
+                a.appendChild(select);
+                csvLinetr.appendChild(a);
+                a.classList.add("custom-select")
+                k++;
+                continue;
+              }
+              if(k<csvLine.length){
+                a = document.createElement("td")
+                a.setAttribute("ondblclick","this.contentEditable=true;this.className='inEdit';")
+                a.setAttribute("onblur","this.contentEditable=false;this.className='';") 
+                a.setAttribute("contenteditable","false")
+                a.innerHTML = csvLine[k]
+                csvLinetr.appendChild(a)
+                k++;
+              }else{
+                a = document.createElement("td")
+                a.innerHTML = "-"
+                csvLinetr.appendChild(a)                   
+              }
+            }
+            tBody.appendChild(csvLinetr)
+            console.log(tBody.childElementCount-1)
+            type = document.getElementById("type_"+(tBody.childElementCount-2))
+            type.value = template_group_to_use
+            if(template_to_use != 0){
+              type2 = document.getElementById("type_"+(tBody.childElementCount-2)+"_"+template_group_to_use)
+              type2.value = template_to_use
+            }
+            select_function(type)
+          }
         </script>
         <link rel="stylesheet" href="{{ url_for('static', filename='/addhosts.css') }}">
     </head>
     <body class="background">
+      <div class="topbar">
+        <img src="{{url_for('static', filename='horus.png')}}" class="imgbar">
+        <form action="/signout" method="POST">
+          <button class="signout" type="submit">Deslogar</button>
+          <input id="auth_token" type="hidden">
+        </form>
+      </div>
        <label class="upload">
           Upload do arquivo CSV
           <input class="custom-button" type="file" id="fileinput" style="display: none;"/>
        </label>
         <button onclick="uploadHosts()">Upload Hosts</button>
+        <button onclick="DownloadPlanilha()">Baixar planilha modelo</button>
+        <button onclick="InserirNaPlanilha()">Inserção manual</button>
         <div class="hosttable-container">
           <table class="hoststable" id="tableCSV">
-            <tbody>
+            <tbody id="tableBody">
               <tr>
                 <th>Hostname</th>
                 <th>Status</th>
@@ -61,6 +204,12 @@
             if (f) {
               var r = new FileReader();
               r.onload = function(e) {
+                tBody = document.getElementById("tableBody")
+                if(tBody.childElementCount > 1){
+                  for(i=tBody.childElementCount;i>1;i--){
+                    tBody.removeChild(tBody.lastChild)
+                  }
+                }
                   console.log(templates_groups)
                   templates_groups_keys = Object.keys(templates_groups)
                   console.log(templates_groups_keys)
@@ -73,6 +222,11 @@
                     template_to_use=0
                     template_group_to_use=0
                     csvLine = lines[i].split(",");
+                    if(i==0){
+                      if(csvLine[0] == "NOME" && csvLine[1] == "IP"){
+                        continue;
+                      }
+                    }
                     console.log(csvLine)
                     csvLinetr = document.createElement("tr")
                     //contador do csv
@@ -164,6 +318,9 @@
                       }
                       if(k<csvLine.length){
                         a = document.createElement("td")
+                        a.setAttribute("ondblclick","this.contentEditable=true;this.className='inEdit';")
+                        a.setAttribute("onblur","this.contentEditable=false;this.className='';") 
+                        a.setAttribute("contenteditable","false")
                         a.innerHTML = csvLine[k]
                         csvLinetr.appendChild(a)
                         k++;

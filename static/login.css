@@ -20,7 +20,23 @@
 img.avatar {
     width: 40%;
   }
-
+  
+  .topbar{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .signout{
+    width: 100px;
+    background-color: red;
+  }
+  
+  .imgbar{
+    width: 50px;
+    height:50px;
+  }
+  
 input[type=text], input[type=password] {
     width: 100%;
     padding: 12px 20px;

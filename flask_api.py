@@ -38,6 +38,22 @@ def login():
     except:
         return redirect("error404")
 
+@app.route('/signout', methods = ["POST", "GET"])
+def signout(): 
+    try:
+        if request.method == "POST":
+            print(request.form)
+            del session["token"]
+            del session["username"]
+            return redirect(url_for("login"))
+        else:
+            if "token" in session:
+                return redirect(url_for("index"))    
+            else:
+                return render_template("login.html")
+    except:
+        return redirect("error404")
+
 @app.route('/index')
 def index():
     try:
@@ -66,7 +82,8 @@ def hosts():
                 return render_template("addhosts.html")
             else:
                 return redirect(url_for("login"))
-    except:
+    except Exception as e:
+        print(e)
         return redirect("error404")
 
 @app.route('/addusers', methods = ["POST", "GET"])
@@ -118,7 +135,8 @@ def addusers():
                     return redirect(url_for("index"))
             else:
                 return redirect(url_for("login"))
-    except:
+    except Exception as e:
+        print(e)
         return redirect("error404")
 
 @app.route('/templates', methods = ['POST', "GET"])

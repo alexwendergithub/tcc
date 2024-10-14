@@ -20,6 +20,22 @@
   --hosttable-text-color: var(--primary-color);
 }
 
+.topbar{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.signout{
+  width: 100px;
+  background-color: red;
+}
+
+.imgbar{
+  width: 50px;
+  height:50px;
+}
+
 label{
   text-align:center;
 }
