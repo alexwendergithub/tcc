@@ -119,6 +119,43 @@ class zabbix_api:
         return r.json()
 
     def add_host_snmp(self, params, ip="horusiff.ddns.net",port=161,dns="", zabbix_type=2):
+        host_group = {
+            #cameras
+            "10634":"38",
+            "Templates/Video surveillance":"38",
+            #router
+            "10637":"39",
+            #servidores
+            "10636":"40",
+            "10644":"40",
+            "10655":"40",
+            "Templates/Server hardware":"40",
+            "Templates/Cloud":"40",
+            #switches
+            "10648":"37",
+            #servidors zabbix
+            "Templates/Operating systems":"4",
+            "10650":"4",
+            #databases
+            "Templates/Databases":"20",
+            #application
+            "Templates/Application":"19",
+            "app":"19",
+            #outros
+            "Templates/Virtualization":"41",
+            "Templates/Telephony":"41",
+            "Templates/Power":"41",
+            "Templates/SAN":"41",
+            "Templates/Network devices":"41",
+            "-":"41",
+            "outros":"41"
+        }
+        if params["template"] in host_group:
+            host_group_to_use = host_group[params["template"]]
+        elif params["template_group"] in host_group:
+            host_group_to_use = host_group[params["template_group"]]
+        else:
+            host_group_to_use = host_group["outros"]
         details = {}
         if (params["SNMP"] == "1"):
             details = {
@@ -159,7 +196,7 @@ class zabbix_api:
                     ],
                     "groups": [
                         {
-                            "groupid": "4"
+                            "groupid": host_group_to_use
                         }
                     ],
                     "templates": [
@@ -179,12 +216,28 @@ class zabbix_api:
         self.name = host
 
     def get_templates_to_show(self):
-        templates = [[16,"SAN"],[18,"Power"],[11,"Server hardware"]]
+        templates = self.get_templates_groups()
         response = {}
         for template_id in templates:
-            response[template_id[1]] = self.get_templates(template_id[0])
+            response[template_id["name"]] = self.get_templates(template_id["groupid"])
         return response
-        
+
+    def get_templates_groups(self):
+        request_json = {
+                "jsonrpc": "2.0",
+                "method": "templategroup.get",
+                "params":{
+
+                },
+                "id": 1,
+                "auth": self.AUTHTOKEN
+        }
+        print(request_json)
+        r = requests.post(self.ZABBIX_API_URL,json=request_json)
+        print(r)
+        print(json.dumps(r.json(), indent=4, sort_keys=True))
+        return r.json()["result"]
+
     def get_templates(self,id):
         request_json = {
                 "jsonrpc": "2.0",

@@ -366,6 +366,11 @@
               Port_ = "-"
             }
             try{
+              template_group_ = host.children[4].children.options[host.children[4].children.selectedIndex].text;
+            }catch{
+              template_group_ = "-"
+            }
+            try{
               console.log(host.children[5])
               selects_count = host.children[5].children.length
               for(counter = 0;counter<selects_count;counter++){
@@ -418,6 +423,7 @@
                   ip : IP_,
                   port : Port_,
                   template : Type_,
+                  template_group : template_group_,
                   SNMP: SNMP_,
                   type: "notaserver",
                   snmp_config: {
