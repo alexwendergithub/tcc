@@ -128,10 +128,10 @@
                   selectOptions.textContent = option;
                   select.appendChild(selectOptions);
                 });
-                if(csvLine[k] == 2 || csvLine[k] == "SNPMv2"){
-                  select.value = 2
-                }else {
+                if(csvLine[k] == 1 || csvLine[k] == "SNPMv1"){
                   select.value = 1
+                }else {
+                  select.value = 2
                 }
                 a = document.createElement("td");
                 a.appendChild(select);
@@ -304,10 +304,10 @@
                           selectOptions.textContent = option;
                           select.appendChild(selectOptions);
                         });
-                        if(csvLine[k] == 2 || csvLine[k] == "SNPMv2"){
-                          select.value = 2
-                        }else {
+                        if(csvLine[k] == 1 || csvLine[k] == "SNPMv1"){
                           select.value = 1
+                        }else {
+                          select.value = 2
                         }
                         a = document.createElement("td");
                         a.appendChild(select);
