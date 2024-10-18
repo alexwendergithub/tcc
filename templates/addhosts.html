@@ -175,13 +175,13 @@
           <input id="auth_token" type="hidden">
         </form>
       </div>
-       <label class="upload">
+        <button onclick="DownloadPlanilha()">Baixar planilha modelo</button>
+        <label class="upload">
           Upload do arquivo CSV
           <input class="custom-button" type="file" id="fileinput" style="display: none;"/>
-       </label>
-        <button onclick="uploadHosts()">Upload Hosts</button>
-        <button onclick="DownloadPlanilha()">Baixar planilha modelo</button>
+        </label>
         <button onclick="InserirNaPlanilha()">Inserção manual</button>
+        <button onclick="uploadHosts()">Upload Hosts</button>
         <div class="hosttable-container">
           <table class="hoststable" id="tableCSV">
             <tbody id="tableBody">

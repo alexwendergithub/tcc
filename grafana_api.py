@@ -5,7 +5,7 @@ import os
 def add_user_grafana(username,password,new_user):
     grafana_url = os.getenv("URL_GRAFANA","10.18.0.24")+":3000"
     isAdmin=False
-    if(new_user["roleid"]!=1 and new_user["roleid"]!="1"):
+    if(new_user["roleid"]==3 and new_user["roleid"]=="3"):
         isAdmin = True
     base_url = "http://{}:{}@{}".format(username, password, grafana_url)
     data = {
