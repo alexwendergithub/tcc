@@ -94,7 +94,7 @@ def addusers():
             if "token" in session:
                 print(request.form)
                 import re
-                pattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
+                pattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$!%*?&])[A-Za-z\d@#$!%*?&]{12,}$"
                 if not (re.fullmatch(pattern, request.form["password"])):
                     return redirect(url_for("addusers", status=4))
                 if (request.form["password"] != request.form["password-repeat"]):
