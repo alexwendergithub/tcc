@@ -1,0 +1,104 @@
+version: '3.1'
+
+networks:
+  network-default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.255.255.0/24
+
+services:
+  mysql:
+    container_name: horus_mysql
+    image: luymar99/horus_mysql
+    networks:
+      network-default:
+       ipv4_address: 10.255.255.2
+    ports:
+      - "3306:3306"
+    volumes:
+      - /home/horus/Volumes/BancoDeDados:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 0m4nd4chuv4!
+      MYSQL_DATABASE: zabbix
+      MYSQL_USER: zabbix
+      MYSQL_PASSWORD: 0m4nd4chuv4!
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+
+  zabbix-server:
+    container_name: horus_zabbix-server
+    image: luymar99/horus_zabbix-server
+    networks:
+      network-default:
+       ipv4_address: 10.255.255.3
+    restart: always
+    ports:
+      - '10051:10051'
+    volumes:
+        - /home/horus/Volumes/Zabbix:/usr/lib/zabbix/
+    environment:
+      - DB_SERVER_HOST=mysql
+      - MYSQL_DATABASE=zabbix
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=0m4nd4chuv4!
+      - PHP_TZ=America/Sao_Paulo
+    depends_on:
+      - mysql
+
+  zabbix-frontend:
+    container_name: horus_zabbix-frontend
+    image: luymar99/horus_zabbix-web
+    networks:
+      network-default:
+       ipv4_address: 10.255.255.4
+    restart: always
+    ports:
+      - '80:8080'
+      - '443:8443'
+    environment:
+      - DB_SERVER_HOST=mysql
+      - MYSQL_DATABASE=zabbix
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=0m4nd4chuv4!
+      - PHP_TZ=America/Sao_Paulo
+    depends_on:
+      - mysql
+
+  grafana:
+    container_name: horus_grafana
+    image: luymar99/horus_grafana
+    networks:
+      network-default:
+       ipv4_address: 10.255.255.5
+    links:
+      - zabbix-server
+      - zabbix-frontend
+    restart: always
+    ports:
+      - '3000:3000'
+    volumes:
+      - /home/horus/Volumes/Grafana:/var/lib/grafana
+    environment:
+      - PHP_TZ=America/Sao_Paulo
+    depends_on:
+      - mysql
+      - zabbix-server
+
+  horus:
+    container_name: horus
+    image: alexwender/horus_flask
+    networks:
+      network-default:
+       ipv4_address: 10.255.255.6
+    restart: always
+    ports:
+      - '5000:5000'
+#    volumes:
+#      - /home/horus/Volumes/Horus:/
+    environment:
+      - PHP_TZ=America/Sao_Paulo
+      - ZABBIX_URL=zabbix-server
+      - GRAFANA_URL=grafana
+    depends_on:
+      - zabbix-server
+      - grafana
