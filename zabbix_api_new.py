@@ -1,7 +1,7 @@
 import requests
 import json
 import os
-url_zabbix="http://10.255.255.3/api_jsonrpc.php"
+url_zabbix="http://10.255.255.4:8080/api_jsonrpc.php"
 
 class zabbix_api:
     
